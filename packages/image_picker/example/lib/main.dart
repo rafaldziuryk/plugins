@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import 'dart:async';
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:video_player/video_player.dart';
@@ -33,40 +30,10 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  File _imageFile;
   dynamic _pickImageError;
   bool isVideo = false;
   VideoPlayerController _controller;
   String _retrieveDataError;
-
-  Future<void> _playVideo(File file) async {
-    if (file != null && mounted) {
-      await _disposeVideoController();
-      _controller = VideoPlayerController.file(file);
-      await _controller.setVolume(1.0);
-      await _controller.initialize();
-      await _controller.setLooping(true);
-      await _controller.play();
-      setState(() {});
-    }
-  }
-
-  void _onImageButtonPressed(ImageSource source) async {
-    if (_controller != null) {
-      await _controller.setVolume(0.0);
-    }
-    if (isVideo) {
-      final File file = await ImagePicker.pickVideo(source: source);
-      await _playVideo(file);
-    } else {
-      try {
-        _imageFile = await ImagePicker.pickImage(source: source);
-        setState(() {});
-      } catch (e) {
-        _pickImageError = e;
-      }
-    }
-  }
 
   @override
   void deactivate() {
@@ -111,14 +78,6 @@ class _MyHomePageState extends State<MyHomePage> {
     final Text retrieveError = _getRetrieveErrorWidget();
     if (retrieveError != null) {
       return retrieveError;
-    }
-    if (_imageFile != null) {
-      return Image.file(_imageFile);
-    } else if (_pickImageError != null) {
-      return Text(
-        'Pick image error: $_pickImageError',
-        textAlign: TextAlign.center,
-      );
     } else {
       return const Text(
         'You have not yet picked an image.',
@@ -133,15 +92,6 @@ class _MyHomePageState extends State<MyHomePage> {
       return;
     }
     if (response.file != null) {
-      if (response.type == RetrieveType.video) {
-        isVideo = true;
-        await _playVideo(response.file);
-      } else {
-        isVideo = false;
-        setState(() {
-          _imageFile = response.file;
-        });
-      }
     } else {
       _retrieveDataError = response.exception.code;
     }
@@ -154,7 +104,7 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
       ),
       body: Center(
-        child: Platform.isAndroid
+        child: Theme.of(context).platform == TargetPlatform.android
             ? FutureBuilder<void>(
                 future: retrieveLostData(),
                 builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
@@ -190,7 +140,6 @@ class _MyHomePageState extends State<MyHomePage> {
           FloatingActionButton(
             onPressed: () {
               isVideo = false;
-              _onImageButtonPressed(ImageSource.gallery);
             },
             heroTag: 'image0',
             tooltip: 'Pick Image from gallery',
@@ -201,7 +150,6 @@ class _MyHomePageState extends State<MyHomePage> {
             child: FloatingActionButton(
               onPressed: () {
                 isVideo = false;
-                _onImageButtonPressed(ImageSource.camera);
               },
               heroTag: 'image1',
               tooltip: 'Take a Photo',
@@ -214,7 +162,6 @@ class _MyHomePageState extends State<MyHomePage> {
               backgroundColor: Colors.red,
               onPressed: () {
                 isVideo = true;
-                _onImageButtonPressed(ImageSource.gallery);
               },
               heroTag: 'video0',
               tooltip: 'Pick Video from gallery',
@@ -227,7 +174,6 @@ class _MyHomePageState extends State<MyHomePage> {
               backgroundColor: Colors.red,
               onPressed: () {
                 isVideo = true;
-                _onImageButtonPressed(ImageSource.camera);
               },
               heroTag: 'video1',
               tooltip: 'Take a Video',
