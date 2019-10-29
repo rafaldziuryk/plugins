@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:image_picker_v2/image_picker_v2.dart';
 import 'package:video_player/video_player.dart';
 
 void main() {
