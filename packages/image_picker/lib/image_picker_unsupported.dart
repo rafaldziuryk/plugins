@@ -8,17 +8,7 @@ import 'dart:html';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
-const String kTypeImage = 'image';
-const String kTypeVideo = 'video';
-
-/// Specifies the source where the picked image should come from.
-enum ImageSource {
-  /// Opens up the device camera, letting the user to take a new picture.
-  camera,
-
-  /// Opens the user's photo gallery.
-  gallery,
-}
+import 'image_picker_const.dart';
 
 class ImagePicker {
 
@@ -58,7 +48,7 @@ class LostDataResponse {
   /// The file that was lost in a previous [pickImage] or [pickVideo] call due to MainActivity being destroyed.
   ///
   /// Can be null if [exception] exists.
-  final File file;
+  final File  file;
 
   /// The exception of the last [pickImage] or [pickVideo].
   ///
