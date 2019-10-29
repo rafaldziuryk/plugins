@@ -9,3 +9,6 @@ enum ImageSource {
   /// Opens the user's photo gallery.
   gallery,
 }
+
+/// The type of the retrieved data in a [LostDataResponse].
+enum RetrieveType { image, video }

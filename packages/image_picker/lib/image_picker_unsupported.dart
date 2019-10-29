@@ -64,6 +64,3 @@ class LostDataResponse {
 
   bool _empty = false;
 }
-
-/// The type of the retrieved data in a [LostDataResponse].
-enum RetrieveType { image, video }
